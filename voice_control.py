@@ -9,7 +9,7 @@ import sounddevice as sd
 import whisper
 import keyboard
 
-from full_llm_finetuned import ask_llm, _backend_name
+from llm_command_generator import ask_llm, _backend_name
 
 HOST = "127.0.0.1"
 PORT = 9100
@@ -71,7 +71,7 @@ def _recv_exact(sock, n):
 
 
 def connect_robot():
-    """Connect to full_robot_client.py and trigger robot setup. Call once at startup."""
+    """Connect to robot_client.py and trigger robot setup. Call once at startup."""
     global _sock
     print(f"Connecting to robot client at {HOST}:{PORT}...")
     _sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -88,7 +88,7 @@ def _send_payload(payload):
 
 
 def execute_screw_command(action, screw_number):
-    """Fasten/unfasten a screw (1-5) or all screws (0) via full_screw_control.py."""
+    """Fasten/unfasten a screw (1-5) or all screws (0) via screw_operations.py."""
     cmd = {"function": "screw_operation", "action": action, "screw_number": screw_number}
     print(f"Screw operation: {cmd}")
     _send_payload(cmd)

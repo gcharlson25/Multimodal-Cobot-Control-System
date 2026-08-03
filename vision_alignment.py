@@ -38,12 +38,12 @@ PIXEL_Y_TO_ROBOT_DIR = 1
 CAMERA_HORIZ_OFFSET = 91.0   
 CAMERA_VERT_OFFSET = 95.0   
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SAVE_DIR = os.path.join(BASE_DIR, "mounted_screw")
 CALIBRATION_FILE = os.path.join(SAVE_DIR, "calibration.json")
 MODEL_PATH = os.path.join(BASE_DIR, "runs", "detect", "head_detect", "weights", "best.pt")
 
-CAMERA_CALIBRATION_FILE = os.path.join(BASE_DIR, "charuco_calibration", "camera_calibration.json")
+CAMERA_CALIBRATION_FILE = os.path.join(BASE_DIR, "camera_calibration", "camera_calibration.json")
 
 VISION_COMMAND_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vision_command.json")
 VOICE_KEY_MAP = {"calibrate": ord('c'), "align": ord('t')}

@@ -14,7 +14,7 @@ mounted_screw/
 mounted_screw_dataset/
 screw_dataset/
 runs/
-charuco_calibration/images/
-charuco_calibration/board_photo.jpg
-charuco_calibration/camera_calibration.json
+camera_calibration/images/
+camera_calibration/board_photo.jpg
+camera_calibration/camera_calibration.json
 vision_command.json

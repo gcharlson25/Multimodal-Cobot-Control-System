@@ -1,0 +1,5 @@
+# Python 3.12 environment — vision_alignment.py, training/*.py, camera_calibration/*.py
+opencv-contrib-python
+ultralytics
+pyrealsense2
+numpy

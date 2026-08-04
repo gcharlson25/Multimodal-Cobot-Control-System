@@ -1,0 +1,6 @@
+# Python 3.14 environment — voice_control.py, llm_command_generator.py
+openai-whisper
+sounddevice
+numpy
+keyboard
+requests

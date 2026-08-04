@@ -1,0 +1,9 @@
+# Python 3.7 environment — robot_client.py, screw_operations.py
+#
+# The JAKA robot SDK (jkrc) is a vendored compiled binary, not a pip package —
+# it ships in out/python3/Release/ and out/shared/Release/ and is loaded via
+# __common.py. Nothing to install for it.
+#
+# Everything else these two files import is Python standard library
+# (json, math, socket, struct, threading, time) — no third-party packages
+# are required for this environment.

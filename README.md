@@ -86,7 +86,7 @@ The JAKA robot SDK, the RealSense camera SDK, and the speech/LLM stack each requ
 ## Machine Learning & Computer Vision
 
 ### Object Detection
-A **machine learning** object detection model (**YOLOv8**, via Ultralytics), trained on a custom dataset of mounted screw images (labeled via Roboflow, exported in YOLO format), detects screw heads in the live camera feed for vision-guided alignment. Detection runs at ~30fps against the RealSense color stream.
+A **machine learning** object detection model (**YOLOv8**, via Ultralytics) detects screw heads in the live camera feed for vision-guided alignment, trained on a custom dataset of mounted screw images — bounding-box annotation was done using Roboflow (annotation/export only; training and inference are both custom-built, see below). Detection runs at ~30fps against the RealSense color stream.
 
 ### Camera Calibration
 Full **ChArUco (ArUco + chessboard) camera calibration** pipeline built from scratch — board detection, marker-dictionary identification, and intrinsic calibration (`cv2.aruco.CharucoBoard` / `CharucoDetector`) — producing a camera matrix and distortion coefficients used for real-world pixel-to-millimeter measurement. Achieved **0.24px reprojection error** and validated to **~1% real-world measurement accuracy** against the board's own known dimensions.
@@ -123,12 +123,12 @@ Safety is enforced in code at the one architectural chokepoint every command pas
 | **LLM command-count cap** | Rejects abnormally large command sequences (guards against runaway/looping LLM generations) |
 | **Proxy-verified LLM execution** | GPT-generated code is recorded and whitelist-filtered before touching the robot; unknown/hallucinated function calls are dropped |
 | **Concurrency lock** | A single `threading.Lock` in the robot process serializes all commands from all clients |
-| **External human-detection safety system** *(separate hardware, not included in this repository)* | A dedicated external device using machine learning to detect people near the workspace, drawing bounding boxes and applying two-zone deceleration — full stop within close range, automatic slow-down at a further range — reducing reaction time compared to a manual e-stop. Integrates with the JAKA controller as a standalone add-on. |
+| **Lens VPS** (Visual Protection System) — external human-detection safety system *(separate hardware, not included in this repository)* | A dedicated external device using machine learning to detect people near the workspace, drawing bounding boxes and applying two-zone deceleration — full stop within close range, automatic slow-down at a further range — reducing reaction time compared to a manual e-stop. Integrates with the JAKA controller as a standalone add-on. |
 
 <p align="center">
   <img src="images/safety_system_wiring.jpg" alt="Electrical wiring for the optional external safety system inside the JAKA control cabinet" width="600">
   <br>
-  <em>Electrical/I-O connection for the optional external human-detection safety system, wired into the JAKA controller's digital I/O terminals.</em>
+  <em>Electrical/I-O connection for the optional Lens VPS (Visual Protection System) external human-detection safety system, wired into the JAKA controller's digital I/O terminals.</em>
 </p>
 
 ---
@@ -270,12 +270,12 @@ This starts all three processes in dependency order (robot client → vision →
 
 ## Datasets & Training
 
-The machine learning model was trained on images labeled and exported via **Roboflow** in YOLOv8 format. The raw training datasets are not committed to this repository (large binary image sets don't belong in git) — the **trained model weights are included directly** (see Installation above), so no dataset download is required to *run* the system. If you want to retrain or extend the machine learning model:
+The machine learning model was trained on a custom bounding-box-annotated dataset exported in YOLOv8 format (see Object Detection above for the annotation workflow). The **trained model weights are included directly** in this repo (see Installation above), so no dataset download is required to *run* the system — but if you want to extend or retrain the detector on your own screws, here's the dataset:
 
-- **Screw head detection dataset:** *[Add your dataset download link here]*
-- **Screw detection dataset (early iteration):** *[Add your dataset download link here]*
+- **[Download: Screw head detection dataset](https://github.com/gcharlson25/Jaka-Voice-Controlled-Cobot/raw/main/training/mounted_screw_dataset.zip)** (224 images, YOLOv8 format)
+- **[Download: Screw detection dataset — early iteration](https://github.com/gcharlson25/Jaka-Voice-Controlled-Cobot/raw/main/training/screw_dataset.zip)** (33 images, YOLOv8 format)
 
-Retrain with `training/train_head.py` once the dataset is downloaded into `mounted_screw_dataset/`.
+Unzip into `mounted_screw_dataset/` at the repo root, then retrain with `training/train_head.py`.
 
 ---
 

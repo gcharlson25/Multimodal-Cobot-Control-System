@@ -2,7 +2,11 @@
 
 A voice- and vision-guided control system for a JAKA collaborative robot arm, combining **local speech recognition**, a **large language model (LLM)** command interpreter, **computer vision-guided closed-loop alignment**, and a **hardware-enforced safety layer** to let an operator perform precision assembly tasks — hands-free, in natural language — without manually teach-pending every motion.
 
-> 🎥 **Demo Video:** *[Add your video link here]* — e.g. `[![Watch the demo](thumbnail.png)](https://your-video-link)`
+### 🎥 Demo Video
+
+[![Watch the demo](https://img.youtube.com/vi/-4sJVdZdFJw/maxresdefault.jpg)](https://youtu.be/-4sJVdZdFJw)
+
+*Click the thumbnail above to watch the full system in action — voice commands, vision-guided alignment, automated fastening, and live safety-rejection of an unsafe command.*
 
 ---
 
@@ -170,7 +174,7 @@ py -3.14 hardware_tests/test_microphone.py       # records 5s, reports peak volu
 
 Launch the full system with one command:
 ```bash
-start_system.bat
+./start_system.bat
 ```
 This starts all three processes in dependency order (robot client → vision → voice), each under its required Python interpreter.
 

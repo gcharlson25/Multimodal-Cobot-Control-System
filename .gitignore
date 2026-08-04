@@ -3,9 +3,6 @@ __pycache__/
 *.pyo
 *.onnx
 *.engine
-command.json
-robot_control.lock
-quit.signal
 .env
 *.pt
 *.pth
@@ -13,7 +10,14 @@ screw_images/
 mounted_screw/
 mounted_screw_dataset/
 screw_dataset/
-runs/
+runs/*
+!runs/detect/
+runs/detect/*
+!runs/detect/head_detect/
+runs/detect/head_detect/*
+!runs/detect/head_detect/weights/
+runs/detect/head_detect/weights/*
+!runs/detect/head_detect/weights/best.pt
 camera_calibration/images/
 camera_calibration/board_photo.jpg
 camera_calibration/camera_calibration.json

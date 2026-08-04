@@ -273,7 +273,7 @@ This starts all three processes in dependency order (robot client → vision →
 The machine learning model was trained on a custom bounding-box-annotated dataset exported in YOLOv8 format (see Object Detection above for the annotation workflow). The **trained model weights are included directly** in this repo (see Installation above), so no dataset download is required to *run* the system — but if you want to extend or retrain the detector on your own screws, here's the dataset:
 
 - **[Download: Screw head detection dataset](https://github.com/gcharlson25/Jaka-Voice-Controlled-Cobot/raw/main/training/mounted_screw_dataset.zip)** (224 images, YOLOv8 format)
-- **[Download: Screw detection dataset — early iteration](https://github.com/gcharlson25/Jaka-Voice-Controlled-Cobot/raw/main/training/screw_dataset.zip)** (33 images, YOLOv8 format)
+- **[Download: Screw detection dataset — early iteration](https://github.com/gcharlson25/Jaka-Voice-Controlled-Cobot/raw/main/training/screw_dataset.zip)** (199 images, YOLOv8 format)
 
 Unzip into `mounted_screw_dataset/` at the repo root, then retrain with `training/train_head.py`.
 

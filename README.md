@@ -14,10 +14,10 @@ A computer vision– and machine learning–guided control system for a JAKA col
 
 This system uses a custom-trained computer vision model and a closed-loop PID controller to visually guide a JAKA Zu5 collaborative robot arm into sub-millimeter alignment with a target, then executes automated fastening/unfastening — all triggerable by voice. Anything outside the pre-defined vocabulary (draw shapes, perform gestures, freeform motion requests) is handled by an LLM that generates robot code on the fly. Every command, whether from a deterministic parser or an LLM, passes through a single hardware-enforced safety chokepoint before it's allowed to move real hardware.
 
-It was built as a from-scratch exploration of **multimodal human-robot interaction**: fusing real-time computer vision, classical control theory (PID), and natural language understanding into one coherent system running across three cooperating processes.
+It was built as a from-scratch exploration of **multimodal human-robot interaction**: fusing machine learning, real-time computer vision, classical control theory (PID), and natural language understanding into one coherent system running across three cooperating processes.
 
 **Core capabilities:**
-- 👁️ **Vision-guided alignment** — a custom-trained object detection model and a closed-loop PID controller visually servo the robot's tool onto a target with sub-millimeter precision
+- 👁️ **Vision-guided alignment** — a custom-trained machine learning object detection model and a closed-loop PID controller visually servo the robot's tool onto a target with sub-millimeter precision
 - 📐 **From-scratch camera calibration** — a full ChArUco calibration pipeline (marker-dictionary identification, intrinsic solving, sub-pixel corner refinement) achieving 0.24px reprojection error and ~1% real-world measurement accuracy
 - 🔩 **Automated assembly** — taught fastening/unfastening routines execute screw-driving operations, including an "unfasten/fasten the currently-aligned target" mode chained directly off the vision system
 - 🤖 **LLM-driven freeform motion** — natural language requests ("do a dance," "draw a circle") are translated into robot motion by GPT-4o, with every generated command safety-checked before execution
@@ -30,6 +30,7 @@ It was built as a from-scratch exploration of **multimodal human-robot interacti
 
 | | |
 |---|---|
+| **~30fps** | Real-time machine learning object detection against the live camera feed |
 | **0.24px** | Camera calibration reprojection error (from-scratch ChArUco pipeline) |
 | **~1%** | Real-world measurement accuracy, validated against known ground truth |
 | **~6–13 iterations** | Typical convergence to final alignment (closed-loop PID, sub-mm final error) |
@@ -85,7 +86,7 @@ The JAKA robot SDK, the RealSense camera SDK, and the speech/LLM stack each requ
 ## Machine Learning & Computer Vision
 
 ### Object Detection
-A **YOLOv8** model (Ultralytics), trained on a custom dataset of mounted screw images (labeled via Roboflow, exported in YOLO format), detects screw heads in the live camera feed for vision-guided alignment. Detection runs at ~30fps against the RealSense color stream.
+A **machine learning** object detection model (**YOLOv8**, via Ultralytics), trained on a custom dataset of mounted screw images (labeled via Roboflow, exported in YOLO format), detects screw heads in the live camera feed for vision-guided alignment. Detection runs at ~30fps against the RealSense color stream.
 
 ### Camera Calibration
 Full **ChArUco (ArUco + chessboard) camera calibration** pipeline built from scratch — board detection, marker-dictionary identification, and intrinsic calibration (`cv2.aruco.CharucoBoard` / `CharucoDetector`) — producing a camera matrix and distortion coefficients used for real-world pixel-to-millimeter measurement. Achieved **0.24px reprojection error** and validated to **~1% real-world measurement accuracy** against the board's own known dimensions.
@@ -137,7 +138,7 @@ Safety is enforced in code at the one architectural chokepoint every command pas
 | Component | Used for |
 |---|---|
 | **JAKA Zu5** collaborative robot arm | The controlled robot; requires the vendor Python SDK (`jkrc`, vendored in `out/`) |
-| **Intel RealSense D435if** depth camera | Screw detection, ChArUco calibration, depth-based measurement |
+| **Intel RealSense D435if** depth camera | Screw detection, ChArUco calibration, depth-based measurement — requires a **USB 3.0 (USB-C)** port; USB 2.0 silently limits resolution/framerate instead of failing clearly |
 | Microphone | Voice command input |
 | **Atlas Copco** fastening/unfastening tool | Digital I/O–controlled end-effector for screw-driving. The control architecture is tool-agnostic — any compatible fastening tool or end-effector can be substituted with only IO pin configuration changes |
 | *(Optional, external)* ML-based human-detection safety device | Separate hardware unit; see Safety Systems above |
@@ -147,7 +148,7 @@ Safety is enforced in code at the one architectural chokepoint every command pas
 ## Technical Stack
 
 **Machine Learning / Computer Vision:**
-- Ultralytics YOLOv8 — object detection
+- Ultralytics YOLOv8 — custom-trained machine learning model for object detection
 - OpenCV (`cv2.aruco`) — ChArUco camera calibration & marker detection
 - Intel RealSense SDK (`pyrealsense2`) — depth sensing
 - NumPy — geometric/control-loop computation
@@ -269,7 +270,7 @@ This starts all three processes in dependency order (robot client → vision →
 
 ## Datasets & Training
 
-The screw-detection model was trained on images labeled and exported via **Roboflow** in YOLOv8 format. The raw training datasets are not committed to this repository (large binary image sets don't belong in git) — the **trained model weights are included directly** (see Installation above), so no dataset download is required to *run* the system. If you want to retrain or extend the detector:
+The machine learning model was trained on images labeled and exported via **Roboflow** in YOLOv8 format. The raw training datasets are not committed to this repository (large binary image sets don't belong in git) — the **trained model weights are included directly** (see Installation above), so no dataset download is required to *run* the system. If you want to retrain or extend the machine learning model:
 
 - **Screw head detection dataset:** *[Add your dataset download link here]*
 - **Screw detection dataset (early iteration):** *[Add your dataset download link here]*
@@ -280,7 +281,7 @@ Retrain with `training/train_head.py` once the dataset is downloaded into `mount
 
 ## Known Limitations
 
-- The object detection model is trained on a limited set of screw types/viewpoints; detection can be less stable on unfamiliar screws or extreme viewing angles.
+- The machine learning object detection model is trained on a limited set of screw types/viewpoints; detection can be less stable on unfamiliar screws or extreme viewing angles.
 - Depth-sensor accuracy degrades on reflective/specular surfaces (a known limitation of stereo depth cameras) — Z-axis alignment mitigates this by using the robot's own encoder position instead of depth for the final correction.
 - Per-move safety caps bound individual commands but not yet cumulative drift across a long sequence of small legal moves (a full Cartesian workspace-boundary check is a planned improvement).
 - Chaining vision-guided alignment directly into the fastening motion is supported, but its reliability is currently bounded by an empirically-derived (rather than fully hand-eye calibrated) camera-to-tool offset.

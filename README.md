@@ -215,26 +215,6 @@ Launch the full system with one command:
 ```
 This starts all three processes in dependency order (robot client → vision → voice), each under its required Python interpreter.
 
----
-
-## Optional: GUI Control Panel
-
-For anyone who'd rather not memorize voice phrases or keyboard shortcuts, `control_panel.py` is an optional single-window control panel that launches the same three processes and gives button-based control instead.
-
-**This is entirely optional** — `start_system.bat` and the voice/keyboard workflow above work exactly as documented, unchanged. The panel is an additional way to run the system, not a replacement.
-
-**What it does:**
-- One-click **Start System** / **Stop System** — launches `robot_client.py`, `vision_alignment.py`, and `voice_control.py` under their required Python interpreters, with a combined log instead of three terminal windows.
-- On-screen buttons for jog movement, Calibrate, Align, Fasten/Unfasten per screw, Go Home, and a push-to-talk button (equivalent to holding spacebar).
-- The live camera feed is embedded directly in the panel window, and clicks/keypresses (WASD, C, T, Escape, click-to-measure) are forwarded to the real vision window, so those controls keep working from inside the panel.
-
-**Known limitation — read before relying on it:** the panel's "Cancel Next Move" button does **not** stop a move that's already in progress — it only prevents the *next* queued command from executing. This is a limitation in how commands are serialized in `robot_client.py`, not something the panel works around. **If the robot needs to be stopped mid-motion, use the physical emergency stop — this button is not a substitute for it.**
-
-**Setup:**
-```bash
-py -3.12 -m pip install -r requirements-panel-optional.txt
-
-
 ### Voice Command Reference
 
 **Keyword tier (instant, no network required):**
@@ -264,6 +244,26 @@ py -3.12 -m pip install -r requirements-panel-optional.txt
 | "make me a sandwich" | **Rejected** — not a parseable robot instruction, zero motion |
 
 **Keyboard controls (vision window):** `W`/`A`/`S`/`D`/`Q`/`E` jog the robot; `C` calibrates; `T` runs alignment; click two points to measure real-world distance between them; `ESC` quits.
+
+---
+
+## Optional: UI Control Panel
+
+For anyone who'd rather not memorize voice phrases or keyboard shortcuts, `control_panel.py` is an optional single-window control panel that launches the same three processes and gives button-based control instead.
+
+**This is entirely optional** — `start_system.bat` and the voice/keyboard workflow above work exactly as documented, unchanged. The panel is an additional way to run the system, not a replacement.
+
+**What it does:**
+- One-click **Start System** / **Stop System** — launches `robot_client.py`, `vision_alignment.py`, and `voice_control.py` under their required Python interpreters, with a combined log instead of three terminal windows.
+- On-screen buttons for jog movement, Calibrate, Align, Fasten/Unfasten per screw, Go Home, and a push-to-talk button (equivalent to holding spacebar).
+- The live camera feed is embedded directly in the panel window, and clicks/keypresses (WASD, C, T, Escape, click-to-measure) are forwarded to the real vision window, so those controls keep working from inside the panel.
+
+**Known limitation — read before relying on it:** the panel's "Cancel Next Move" button does **not** stop a move that's already in progress — it only prevents the *next* queued command from executing. This is a limitation in how commands are serialized in `robot_client.py`, not something the panel works around. **If the robot needs to be stopped mid-motion, use the physical emergency stop — this button is not a substitute for it.**
+
+**Setup:**
+```bash
+py -3.12 -m pip install -r requirements-panel-optional.txt
+```
 
 ---
 
